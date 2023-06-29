@@ -13,7 +13,7 @@ else
 	SUM:=@echo
 endif
 
-CROSS_COMPILE ?= mipsel-linux-
+CROSS_COMPILE ?= mipsel-linux-gnu-
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
 OBJCOPY = $(CROSS_COMPILE)objcopy
@@ -23,7 +23,7 @@ NM = $(CROSS_COMPILE)nm
 CFLAGS	:= -Wall -Os -fno-pic -mno-abicalls -mno-check-zero-division -ffreestanding -flto
 CFLAGS	+= $(CFLAGS_all)
 CPPFLAGS := -DBOARD_$(BOARD) -DJZ_VERSION=$(JZ_VERSION)
-LDFLAGS := -nostdlib -EL
+LDFLAGS := -nostdlib -EL -Wl,--build-id=none
 
 ifneq ($(findstring $(JZ_VERSION),JZ4740 JZ4750),)
 LDFLAGS += -T ldscripts/target-jz4740.ld

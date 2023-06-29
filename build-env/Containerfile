@@ -1,0 +1,28 @@
+FROM docker.io/ubuntu:xenial
+
+RUN set -exu \
+  && apt-get -yq update \
+  && apt-get -yq install \
+    build-essential \
+    gcc-5-mipsel-linux-gnu \
+    make \
+  && apt-get -yq clean \
+  && cd /usr/bin \
+  && ln -s mipsel-linux-gnu-cpp-5 mipsel-linux-gnu-cpp \
+  && ln -s mipsel-linux-gnu-gcc-5 mipsel-linux-gnu-gcc \
+  && ln -s mipsel-linux-gnu-gcov-5 mipsel-linux-gcov-cpp
+
+# setup builder user
+RUN set -exu \
+  && groupadd --gid 1000 builder \
+  && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash builder \
+  && usermod -a -G sudo builder \
+  && chown -R 1000:1000 /home/builder \
+  && echo 'builder ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+  && mkdir -p /opt/workdir
+
+USER builder
+
+WORKDIR /opt/workdir
+
+CMD /bin/bash
