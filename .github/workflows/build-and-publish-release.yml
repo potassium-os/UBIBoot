@@ -17,8 +17,8 @@ jobs:
       - name: Install podman
         run: |
           set -exu \
-          && apt-get -yq update \
-          && apt-get -yq install podman \
+          && sudo apt-get -yq update \
+          && sudo apt-get -yq install podman \
           && podman system migrate
 
       - name: Build for a320
