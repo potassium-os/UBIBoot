@@ -1,0 +1,57 @@
+name: Build and Push Release
+
+on:
+  push:
+    tags:
+       - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: ubiboot
+
+      - name: Install podman
+        run: |
+          set -exu \
+          && apt-get -yq update \
+          && apt-get -yq install podman \
+          && podman system migrate
+
+      - name: Build for a320
+        run: |
+          set -exu \
+          && cd ubiboot \
+          && ./build-env/build-env-exec.sh make CONFIG=a320 \
+          && ./build-env/build-env-exec.sh make CONFIG=gcw0 \
+          && ./build-env/build-env-exec.sh make CONFIG=lepus \
+          && ./build-env/build-env-exec.sh make CONFIG=rs90
+
+      - name: Push Release
+        uses: softprops/action-gh-release@v1
+        generate_release_notes: true
+        with:
+          files: |
+            ./output/a320/ubiboot-a320.bin \
+            ./output/a320/ubiboot-a320.elf \
+            ./output/gcw0/ubiboot-rg350.bin \
+            ./output/gcw0/ubiboot-rg350.elf \
+            ./output/gcw0/ubiboot-v11_ddr2_256mb.bin \
+            ./output/gcw0/ubiboot-v11_ddr2_256mb.elf \
+            ./output/gcw0/ubiboot-v11_ddr2_512mb.bin \
+            ./output/gcw0/ubiboot-v11_ddr2_512mb.elf \
+            ./output/gcw0/ubiboot-v20_mddr_512mb.bin \
+            ./output/gcw0/ubiboot-v20_mddr_512mb.elf \
+            ./output/lepus/ubiboot-gopher2b.bin \
+            ./output/lepus/ubiboot-gopher2b.elf \
+            ./output/lepus/ubiboot-gopher2.bin \
+            ./output/lepus/ubiboot-gopher2.elf \
+            ./output/lepus/ubiboot-lepus.bin \
+            ./output/lepus/ubiboot-lepus.elf \
+            ./output/rs90/ubiboot-v21.bin \
+            ./output/rs90/ubiboot-v21.elf \
+            ./output/rs90/ubiboot-v30.bin \
+            ./output/rs90/ubiboot-v30.elf
