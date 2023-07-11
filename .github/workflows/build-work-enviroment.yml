@@ -1,9 +1,9 @@
 name: Docker Image Build - Build Environment
 on:
-  # build when push to main or release happens
+  # build when push to master
   push:
     branches:
-      - main
+      - master
 
   # allow manual execution
   workflow_dispatch:
@@ -14,39 +14,35 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  COMPONENT: php
 
 jobs:
-  build-and-push-image:
-    runs-on: ubuntu-latest
+  build:
+    name: Build and push image
+    runs-on: ubuntu-20.04
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - uses: actions/checkout@v2
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Image
+      id: build-image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: ${{ env.REGISTRY }}/${{ github.repository }}
+        tags: latest ${{ github.sha }}
+        containerfiles: |
+          ./build-env/Containerfile
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}
-          tags: |
-            type=ref,event=branch,suffix=-${{ env.COMPONENT }}
-            type=ref,event=tag,suffix=-${{ env.COMPONENT }}
-            type=ref,event=pr,suffix=-${{ env.COMPONENT }}
-            type=sha,format=long,suffix=-${{ env.COMPONENT }}
-            type=raw,value=latest,suffix=-${{ env.COMPONENT }},priority=1000,enable={{is_default_branch}}
+    # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
+    # in which case 'username' and 'password' can be omitted.
+    - name: Push To ghcr.io
+      id: push-to-ghcr
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: ./build-env/
-          file: "Containerfile"
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+    - name: Print image url
+      run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.registry-paths }}"
