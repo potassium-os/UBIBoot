@@ -34,24 +34,25 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
-            ./output/a320/ubiboot-a320.bin \
-            ./output/a320/ubiboot-a320.elf \
-            ./output/gcw0/ubiboot-rg350.bin \
-            ./output/gcw0/ubiboot-rg350.elf \
-            ./output/gcw0/ubiboot-v11_ddr2_256mb.bin \
-            ./output/gcw0/ubiboot-v11_ddr2_256mb.elf \
-            ./output/gcw0/ubiboot-v11_ddr2_512mb.bin \
-            ./output/gcw0/ubiboot-v11_ddr2_512mb.elf \
-            ./output/gcw0/ubiboot-v20_mddr_512mb.bin \
-            ./output/gcw0/ubiboot-v20_mddr_512mb.elf \
-            ./output/lepus/ubiboot-gopher2b.bin \
-            ./output/lepus/ubiboot-gopher2b.elf \
-            ./output/lepus/ubiboot-gopher2.bin \
-            ./output/lepus/ubiboot-gopher2.elf \
-            ./output/lepus/ubiboot-lepus.bin \
-            ./output/lepus/ubiboot-lepus.elf \
-            ./output/rs90/ubiboot-v21.bin \
-            ./output/rs90/ubiboot-v21.elf \
-            ./output/rs90/ubiboot-v30.bin \
-            ./output/rs90/ubiboot-v30.elf
+            ./ubiboot/output/a320/ubiboot-a320.bin
+            ./ubiboot/output/a320/ubiboot-a320.elf
+            ./ubiboot/output/gcw0/ubiboot-rg350.bin
+            ./ubiboot/output/gcw0/ubiboot-rg350.elf
+            ./ubiboot/output/gcw0/ubiboot-v11_ddr2_256mb.bin
+            ./ubiboot/output/gcw0/ubiboot-v11_ddr2_256mb.elf
+            ./ubiboot/output/gcw0/ubiboot-v11_ddr2_512mb.bin
+            ./ubiboot/output/gcw0/ubiboot-v11_ddr2_512mb.elf
+            ./ubiboot/output/gcw0/ubiboot-v20_mddr_512mb.bin
+            ./ubiboot/output/gcw0/ubiboot-v20_mddr_512mb.elf
+            ./ubiboot/output/lepus/ubiboot-gopher2b.bin
+            ./ubiboot/output/lepus/ubiboot-gopher2b.elf
+            ./ubiboot/output/lepus/ubiboot-gopher2.bin
+            ./ubiboot/output/lepus/ubiboot-gopher2.elf
+            ./ubiboot/output/lepus/ubiboot-lepus.bin
+            ./ubiboot/output/lepus/ubiboot-lepus.elf
+            ./ubiboot/output/rs90/ubiboot-v21.bin
+            ./ubiboot/output/rs90/ubiboot-v21.elf
+            ./ubiboot/output/rs90/ubiboot-v30.bin
+            ./ubiboot/output/rs90/ubiboot-v30.elf
